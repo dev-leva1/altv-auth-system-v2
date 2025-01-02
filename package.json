@@ -1,0 +1,11 @@
+{
+  "name": "auth",
+  "version": "1.0.0",
+  "description": "Authentication system for alt:V server",
+  "main": "server/index.js",
+  "type": "module",
+  "dependencies": {
+    "crypto-js": "^4.2.0",
+    "mysql2": "^3.6.5"
+  }
+} 

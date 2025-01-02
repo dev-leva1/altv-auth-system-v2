@@ -1,0 +1,11 @@
+type = "js"
+main = "server/index.js"
+client-main = "client/index.js"
+client-files = [
+    "client/*",
+    "client/html/*"
+]
+deps = []
+
+[files]
+characters = "server/characters.js" 

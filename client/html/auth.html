@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Authentication</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            overflow: hidden;
+        }
+
+        .auth-container {
+            background: linear-gradient(145deg, rgba(25, 25, 25, 0.9), rgba(15, 15, 15, 0.95));
+            padding: 30px;
+            border-radius: 15px;
+            width: 380px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .auth-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 500;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #ffffff, #e0e0e0);
+            color: #000;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        button.secondary {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        button.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .error-message, .success-message {
+            margin-top: 15px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .error-message {
+            background: rgba(255, 87, 87, 0.1);
+            border: 1px solid rgba(255, 87, 87, 0.3);
+            color: #ff5757;
+        }
+
+        .success-message {
+            background: rgba(87, 255, 87, 0.1);
+            border: 1px solid rgba(87, 255, 87, 0.3);
+            color: #57ff57;
+        }
+
+        .validation-error {
+            color: #ff5757;
+            font-size: 12px;
+            margin-top: 5px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        #loginForm, #registerForm {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        #loginForm.hidden, #registerForm.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .form-switch {
+            opacity: 0;
+            animation: fadeIn 0.3s ease forwards;
+            animation-delay: 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div id="loginForm">
+            <h2>Login</h2>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required placeholder="Enter password">
+            </div>
+            <button onclick="tryLogin()">Login</button>
+            <button onclick="showRegisterForm()" class="secondary">Register</button>
+            <div id="loginMessage"></div>
+        </div>
+
+        <div id="registerForm" style="display: none;">
+            <h2>Register</h2>
+            <div class="form-group">
+                <label for="regUsername">Username</label>
+                <input type="text" id="regUsername" required placeholder="Choose username">
+            </div>
+            <div class="form-group">
+                <label for="regEmail">Email</label>
+                <input type="email" id="regEmail" required placeholder="Enter email">
+                <div id="emailError" class="validation-error"></div>
+            </div>
+            <div class="form-group">
+                <label for="regPassword">Password</label>
+                <input type="password" id="regPassword" required placeholder="Minimum 6 characters">
+                <div id="passwordError" class="validation-error"></div>
+            </div>
+            <div class="form-group">
+                <label for="regPasswordConfirm">Confirm Password</label>
+                <input type="password" id="regPasswordConfirm" required placeholder="Repeat password">
+                <div id="passwordConfirmError" class="validation-error"></div>
+            </div>
+            <button onclick="tryRegister()">Register</button>
+            <button onclick="showLoginForm()" class="secondary">Back to Login</button>
+            <div id="registerMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        function showLoginForm() {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            
+            registerForm.style.opacity = '0';
+            setTimeout(() => {
+                registerForm.style.display = 'none';
+                loginForm.style.display = 'block';
+                setTimeout(() => {
+                    loginForm.style.opacity = '1';
+                }, 50);
+            }, 300);
+            clearErrors();
+        }
+
+        function showRegisterForm() {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            
+            loginForm.style.opacity = '0';
+            setTimeout(() => {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                setTimeout(() => {
+                    registerForm.style.opacity = '1';
+                }, 50);
+            }, 300);
+            clearErrors();
+        }
+
+        function clearErrors() {
+            document.getElementById('emailError').textContent = '';
+            document.getElementById('passwordError').textContent = '';
+            document.getElementById('passwordConfirmError').textContent = '';
+            document.getElementById('registerMessage').textContent = '';
+            document.getElementById('loginMessage').textContent = '';
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validatePassword(password) {
+            return password.length >= 6;
+        }
+
+        function tryLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!username || !password) {
+                const messageDiv = document.getElementById('loginMessage');
+                messageDiv.textContent = 'Please fill in all fields';
+                messageDiv.className = 'error-message';
+                return;
+            }
+
+            if ('alt' in window) {
+                const loginData = {
+                    username: username,
+                    password: password
+                };
+                alt.emit('auth:tryLogin', loginData);
+            }
+        }
+
+        function tryRegister() {
+            clearErrors();
+            let hasErrors = false;
+
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const passwordConfirm = document.getElementById('regPasswordConfirm').value.trim();
+
+            if (!username || !email || !password || !passwordConfirm) {
+                document.getElementById('registerMessage').textContent = 'Please fill in all fields';
+                document.getElementById('registerMessage').className = 'error-message';
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                document.getElementById('emailError').textContent = 'Please enter a valid email address';
+                hasErrors = true;
+            }
+
+            if (!validatePassword(password)) {
+                document.getElementById('passwordError').textContent = 'Password must be at least 6 characters long';
+                hasErrors = true;
+            }
+
+            if (password !== passwordConfirm) {
+                document.getElementById('passwordConfirmError').textContent = 'Passwords do not match';
+                hasErrors = true;
+            }
+
+            if (!hasErrors && 'alt' in window) {
+                const userData = {
+                    username: username,
+                    password: password,
+                    email: email
+                };
+                alt.emit('auth:tryRegister', userData);
+            }
+        }
+
+        if ('alt' in window) {
+            alt.on('auth:loginResponse', (success, message) => {
+                const messageDiv = document.getElementById('loginMessage');
+                messageDiv.textContent = message;
+                messageDiv.className = success ? 'success-message' : 'error-message';
+            });
+
+            alt.on('auth:registerResponse', (success, message) => {
+                const messageDiv = document.getElementById('registerMessage');
+                messageDiv.textContent = message;
+                messageDiv.className = success ? 'success-message' : 'error-message';
+                if (success) {
+                    setTimeout(showLoginForm, 2000);
+                }
+            });
+        }
+    </script>
+</body>
+</html> 
